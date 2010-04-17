@@ -1,0 +1,38 @@
+munin_weather
+=============
+
+These are just a few code snippets that try to glue weather stations and
+other sensor devices (1-wire, arduino, etc.) to Munin for visualization.
+
+muninexchange/:
+Sensor reading code from http://muninexchange.projects.linpro.no/?search
+
+ws2300/:
+I'm using a modified version of "Open2300" v.1.10 to get sensor readings
+from a Conrad WS2300 weather station (RS232 connection).
+See also: http://www.lavrsen.dk/twiki/bin/view/Open2300/WebHome
+
+te923/:
+I'm using a modified version "te923con" v.0.4 to get sensor readings
+from a Mebus TE821 weather station (USB connection).
+See also: http://te923.fukz.org/home
+
+onewire/:
+I'm using a modified version "DigiTemp" v.3.6.0 to get sensor readings
+from serially connected One-Wire sensors: DS1820, DS18B20.
+See also: http://www.digitemp.com/software.shtml
+I'm using a homegrown rs232 adapter (compatible to digitemp_DS9097).
+
+arduino/:
+Arduino-Stuff goes here: to be done
+
+avrnetio/:
+Use Pollin AVR-NET-IO boards for sensor readings: to be done
+
+==================================
+
+All of my code is freely available to anyone.
+See other people's code for their copyright restrictions.
+
+Have fun,
+Michael
