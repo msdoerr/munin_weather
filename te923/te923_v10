@@ -66,7 +66,7 @@ print "H2.value " $7 ;
 print "H3.value " $9 ;
 print "H4.value " $11 ;
 print "H5.value " $13 ;
-'
+}'
 
 exit 0
 
