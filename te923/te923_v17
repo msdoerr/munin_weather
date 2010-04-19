@@ -1,0 +1,131 @@
+#!/bin/sh
+#
+#       Munin plugin:
+#               read data from TE923 weather station
+#               and let munin make pretty graphs
+#
+# msd, 17-apr-2010, v1.0:       get temperatures and humidities from
+#                               base station and 5 additional sensors
+# msd, 18-apr-2010, v1.1:       workaround for argc bug in munin 1.2.x
+# msd, 19-apr-2010, v1.2:       use cron to call te923con to log data to file
+#
+# msd, 19-apr-2010, v1.5:       convert to generic script for temp/humid
+# msd, 19-apr-2010, v1.6:       add pressure and rain
+# msd, 19-apr-2010, v1.7:       use more sensible graph ranges and labels
+#
+
+WEATHER=/home/te923
+FILE=$WEATHER/last.log
+
+SCRIPT=$(basename $0)
+MODE=${SCRIPT##*_}
+
+MODEL="Mebus TE821"
+
+###     "configuration" sections
+
+if [ "$1" = "autoconf" ] ; then
+
+    if [ -x "$WEATHER" ] ; then
+        echo "yes"
+        exit 0
+    else
+        echo "no (te923con not found)"
+        exit 1
+    fi
+
+elif [ "$1" = "config" ] ; then
+
+    echo "graph_category Weather"
+    #echo "graph_args --base 1000 -l -20 -m 50"
+
+    case "$MODE" in
+    temperature)
+        echo "graph_title Temperature"
+        echo "graph_info Temperature sensors ($MODEL)"
+        echo "graph_vlabel Temp. in C"
+        echo "T0.label Temp0"
+        echo "T1.label Temp1"
+        echo "T2.label Temp2"
+        echo "T3.label Temp3"
+        echo "T4.label Temp4"
+        echo "T5.label Temp5"
+    ;;
+
+    humidity)
+        echo "graph_title Humidity"
+        echo "graph_info Humidity sensors ($MODEL)"
+        echo "graph_vlabel Humidity in %"
+        echo "H0.label Humid0"
+        echo "H1.label Humid1"
+        echo "H2.label Humid2"
+        echo "H3.label Humid3"
+        echo "H4.label Humid4"
+        echo "H5.label Humid5"
+    ;;
+
+    pressure)
+        echo "graph_title Pressure"
+        echo "graph_info Pressure sensor ($MODEL)"
+        echo "graph_args --base 1000 -l 850 -m 1050"
+        echo "graph_vlabel Press. in hPa"
+        echo "Press.label Pressure"
+    ;;
+
+    rain)
+        echo "graph_title Rain"
+        echo "graph_info Rain counter ($MODEL)"
+        echo "graph_vlabel Rain in mm"
+        echo "Rain.label Rain"
+    ;;
+
+    esac
+
+    exit 0
+fi
+
+###     "data" section
+
+case "$MODE" in
+temperature)
+    cat $FILE | /usr/bin/awk -F: '
+    END {
+        print "T0.value " $2 ;
+        print "T1.value " $4 ;
+        print "T2.value " $6 ;
+        print "T3.value " $8 ;
+        print "T4.value " $10 ;
+        print "T5.value " $12 ;
+    }'
+;;
+
+humidity)
+    cat $FILE | /usr/bin/awk -F: '
+    END {
+        print "H0.value " $3 ;
+        print "H1.value " $5 ;
+        print "H2.value " $7 ;
+        print "H3.value " $9 ;
+        print "H4.value " $11 ;
+        print "H5.value " $13 ;
+    }'
+;;
+
+pressure)
+    cat $FILE | /usr/bin/awk -F: '
+    END {
+        print "Press.value " $14 ;
+    }'
+;;
+
+rain)
+    cat $FILE | /usr/bin/awk -F: '
+    END {
+        print "Rain.value " $22 ;
+    }'
+;;
+
+esac
+
+exit 0
+
