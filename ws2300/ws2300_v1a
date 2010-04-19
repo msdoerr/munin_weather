@@ -53,7 +53,7 @@ elif [ "$1" = "suggest" ] ; then
 elif [ "$1" = "config" ] ; then
 
     echo "graph_category Weather"
-    #echo "graph_args --base 1000 -l -20 -u 50"
+    echo "graph_scale no"
 
     case "$MODE" in
     temperature)
