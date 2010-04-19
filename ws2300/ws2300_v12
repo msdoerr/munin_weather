@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+#       Munin plugin:
+#               read data from WS2300 weather station
+#               and let munin make pretty graphs
+#
+# msd, 17-apr-2010, v1.0:       get in/outside temperatures and humidities
+# msd, 18-apr-2010, v1.1:       workaround for argc bug in munin 1.2.x
+# msd, 18-apr-2010, v1.2:       use cron to call log2300 to log data to file
+#
+
+WEATHER=/home/ws2300
+FILE=$WEATHER/last.log
+
+###     "configuration" sections
+
+if [ "$1" = "autoconf" ] ; then
+
+    if [ -d "$WEATHER" ] ; then
+        echo "yes"
+        exit 0
+    else
+        echo "no (ws2300 not found)"
+        exit 1
+    fi
+
+elif [ "$1" = "config" ] ; then
+
+    echo "graph_title WS2300"
+    #echo "graph_args --base 1000 -l -20 -m 50"
+    echo "graph_category Weather"
+    echo "graph_info In/Outside temperature and humidity"
+    echo "graph_vlabel Temp. in C / Humidity in %"
+
+    echo "Tin.label Tin"
+    echo "Tout.label Tout"
+    echo "Hin.label Hin"
+    echo "Hout.label Hout"
+
+    exit 0
+fi
+
+###     "data" section
+
+cat $FILE | /usr/bin/awk '
+END {
+    print "Tin.value " $4 ;
+    print "Tout.value " $5 ;
+    print "Hin.value " $7 ;
+    print "Hout.value " $8 ;
+}'
+
+exit 0
+
