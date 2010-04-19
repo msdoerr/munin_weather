@@ -1,0 +1,147 @@
+#!/bin/sh
+#
+#       Munin plugin:
+#               read data from WS2300 weather station
+#               and let munin make pretty graphs
+#
+# msd, 17-apr-2010, v1.0:       get in/outside temperatures and humidities
+# msd, 18-apr-2010, v1.1:       workaround for argc bug in munin 1.2.x
+# msd, 19-apr-2010, v1.2:       use cron to call log2300 to log data to file
+#
+# msd, 19-apr-2010, v1.5:       convert to generic script for temp/humid
+# msd, 19-apr-2010, v1.6:       add pressure and rain
+# msd, 19-apr-2010, v1.7:       use more sensible graph ranges and labels
+# msd, 19-apr-2010, v1.8:       add magic markers and suggest capability
+# msd, 19-apr-2010, v1.9:       workaround for "OOPS: Cairo ..." message
+#
+#%# family=manual
+#%# capabilities=autoconf suggest
+#
+
+WEATHER=/home/ws2300
+FILE=$WEATHER/last.log
+
+SCRIPT=$(basename $0)
+MODE=${SCRIPT##*_}
+
+MODEL="Conrad WS2300"
+
+###     "configuration" sections
+
+if [ "$1" = "autoconf" ] ; then
+
+    if [ -d "$WEATHER" ] ; then
+        echo "yes"
+        exit 0
+    else
+        echo "no (ws2300 not found)"
+        exit 1
+    fi
+
+elif [ "$1" = "suggest" ] ; then
+
+    echo "temperature"
+    echo "humidity"
+    echo "pressure"
+    echo "rain"
+    echo "raintotal"
+
+    exit 0
+
+elif [ "$1" = "config" ] ; then
+
+    echo "graph_category Weather"
+    #echo "graph_args --base 1000 -l -20 -m 50"
+
+    case "$MODE" in
+    temperature)
+        echo "graph_title Temperature"
+        echo "graph_info In/Outside temperature ($MODEL)"
+        echo "graph_vlabel temperature in C"
+        echo "Tin.label Inside"
+        echo "Tout.label Outside"
+    ;;
+
+    humidity)
+        echo "graph_title Humidity"
+        echo "graph_info In/Outside humidity ($MODEL)"
+        echo "graph_vlabel humidity in %"
+        echo "Hin.label Inside"
+        echo "Hout.label Outside"
+    ;;
+
+    pressure)
+        echo "graph_title Pressure"
+        echo "graph_info Pressure sensor ($MODEL)"
+        #echo "graph_args --base 1000 -l 850 -m 1050 --rigid"
+        echo "graph_vlabel pressure in hPa"
+        echo "Press.label Pressure"
+        echo "Press.type GAUGE"
+    ;;
+
+    rain)
+        echo "graph_title Rain"
+        echo "graph_info Rain counter ($MODEL)"
+        echo "graph_vlabel rain in mm"
+        echo "Rain1H.label Rain (1h)"
+        echo "Rain24H.label Rain (1d)"
+    ;;
+
+    raintotal)
+        echo "graph_title Total Rain "
+        echo "graph_info Rain counter ($MODEL)"
+        echo "graph_vlabel rain in mm"
+        echo "RainTOT.label Total rain"
+        echo "RainTOT.type GAUGE"
+    ;;
+
+    esac
+
+    exit 0
+fi
+
+###     "data" section
+
+case "$MODE" in
+temperature)
+    cat $FILE | /usr/bin/awk '
+    END {
+        print "Tin.value " $4 ;
+        print "Tout.value " $5 ;
+    }'
+;;
+
+humidity)
+    cat $FILE | /usr/bin/awk '
+    END {
+        print "Hin.value " $7 ;
+        print "Hout.value " $8 ;
+    }'
+;;
+
+rain)
+    cat $FILE | /usr/bin/awk '
+    END {
+        print "Rain1H.value " $13 ;
+        print "Rain24H.value " $14 ;
+    }'
+;;
+
+raintotal)
+    cat $FILE | /usr/bin/awk '
+    END {
+        print "RainTOT.value " $15 ;
+    }'
+;;
+
+pressure)
+    cat $FILE | /usr/bin/awk '
+    END {
+        print "Press.value " $16 ;
+    }'
+;;
+
+esac
+
+exit 0
+
