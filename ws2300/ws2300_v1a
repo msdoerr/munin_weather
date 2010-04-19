@@ -75,7 +75,7 @@ elif [ "$1" = "config" ] ; then
     pressure)
         echo "graph_title Pressure"
         echo "graph_info Pressure sensor ($MODEL)"
-        echo "graph_args --base 1000 -l 850 -u 1050"
+        echo "graph_args --base 1000 -l 850 -u 1050 --rigid"
         echo "graph_vlabel Press. in hPa"
         echo "Press.label Pressure"
     ;;
