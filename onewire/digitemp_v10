@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+#       Munin plugin:
+#               read data from OneWire sensors (with DigiTemp)
+#               and let munin make pretty graphs
+#
+# msd, 22-apr-2010, v1.0:       get temperature from one 1-wire sensor
+#
+
+WEATHER=/home/onewire
+FILE=$WEATHER/last.log
+
+###     "configuration" sections
+
+if [ "$1" = "autoconf" ] ; then
+
+    if [ -x "$WEATHER" ] ; then
+        echo "yes"
+        exit 0
+    else
+        echo "no (digitemp not found)"
+        exit 1
+    fi
+
+elif [ "$1" = "config" ] ; then
+
+    echo "graph_title OneWire"
+    echo "graph_scale no"
+    #echo "graph_args --base 1000 -l -20 -u 50"
+    echo "graph_category Weather"
+    echo "graph_info Temperature "
+    echo "graph_vlabel Temp. in C "
+
+    echo "T0.label Sensor 0"
+
+    exit 0
+fi
+
+###     "data" section
+
+cat $FILE | /usr/bin/awk '
+$4 == "Sensor"	{ print "T0.value " $7 }
+'
+
+exit 0
+
