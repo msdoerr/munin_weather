@@ -1,0 +1,41 @@
+# aggregate weather graphs
+
+[weather;Temperature]
+    update no
+    temp1.graph_title Ground floor
+    temp1.graph_vlabel Temp. in C
+    temp1.graph_order Lounge=v3.msd;silver.v3.msd:weather_te923_temperature.T4 Cellar=v3.msd;silver.v3.msd:weather_te923_temperature.T5
+    temp2.graph_title 1st floor
+    temp2.graph_vlabel Temp. in C
+    temp2.graph_order Library=v3.msd;silver.v3.msd:weather_te923_temperature.T0 Bedroom=v3.msd;silver.v3.msd:weather_te923_temperature.T3
+    temp3.graph_title 2nd floor (Studio)
+    temp3.graph_vlabel Temp. in C
+    temp3.graph_order Studio1=v3.msd;brikett1.v3.msd:weather_ws2300_temperature.Tin Studio2=v3.msd;silver.v3.msd:weather_te923_temperature.T1
+    temp4.graph_title Outside
+    temp4.graph_vlabel Temp. in C
+    temp4.graph_order Outside=v3.msd;brikett1.v3.msd:weather_ws2300_temperature.Tout
+    temp5.graph_title 2nd floor (Server room)
+    temp5.graph_vlabel Temp. in C
+    temp5.graph_order Servers1=v3.msd;silver.v3.msd:weather_te923_temperature.T2 Servers2=v3.msd;infra1.v3.msd:weather_digitemp.T0
+
+[weather;Humidity]
+    update no
+    humid1.graph_title Ground floor
+    humid1.graph_vlabel rel. Humid. in %
+    humid1.graph_order Lounge=v3.msd;silver.v3.msd:weather_te923_humidity.H4 Cellar=v3.msd;silver.v3.msd:weather_te923_humidity.H5
+    humid2.graph_title 1st floor
+    humid2.graph_vlabel rel. Humid. in %
+    humid2.graph_order Library=v3.msd;silver.v3.msd:weather_te923_humidity.H0 Bedroom=v3.msd;silver.v3.msd:weather_te923_humidity.H3
+    humid3.graph_title 2nd floor (Studio)
+    humid3.graph_vlabel rel. Humid. in %
+    humid3.graph_order Studio1=v3.msd;brikett1.v3.msd:weather_ws2300_humidity.Hin Studio2=v3.msd;silver.v3.msd:weather_te923_humidity.H1
+    humid4.graph_title Outside
+    humid4.graph_vlabel rel. Humid. in %
+    humid4.graph_order Outside=v3.msd;brikett1.v3.msd:weather_ws2300_humidity.Hout
+    humid5.graph_title 2nd floor (Server room)
+    humid5.graph_vlabel rel. Humid. in %
+    humid5.graph_order Servers1=v3.msd;silver.v3.msd:weather_te923_humidity.H2
+
+[weather;]
+    node_order Temperature Humidity
+
