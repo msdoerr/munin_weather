@@ -23,7 +23,7 @@ I'm using an unmodified version of "DigiTemp" v.3.6.0 to get sensor readings
 from serially connected One-Wire sensors: DS1820, DS18B20.
 See also: http://www.digitemp.com/software.shtml
 I'm using a homegrown RS232 adapter (compatible to DS9097).
-Munin 1.4.x also comes with a standard plugin called "digitmep_".
+Munin 1.4.x also comes with a standard plugin called "digitemp_".
 
 etc/:
 munin.conf: make aggregate weather graphs from basic measurements
